@@ -70,21 +70,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-
-  n8n-import:
-    <<: *service-n8n
-    hostname: n8n-import
-    container_name: n8n-import
-    entrypoint: /bin/sh
-    command:
-      - "-c"
-      - "n8n import:credentials --separate --input=/backup/credentials && n8n import:workflow --separate --input=/backup/workflows"
-    volumes:
-      - ./n8n/backup:/backup
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   n8n:
     <<: *service-n8n
     hostname: n8n
@@ -161,7 +146,7 @@ services:
       - "-c"
       - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull llama2"
     depends_on:
-      - ollama-cpu
+      - ollama
 
   ollama-pull-llama-gpu:
     profiles: ["gpu-nvidia"]
